@@ -61,6 +61,7 @@ m1$sdrep
 
 output$biomass_by_strata %>% View # df of predicted and observed biomass by stratum
 output$total_predicted_biomass # total predicted biomass
+output$proportion_biomass_by_strata # apportionment
 
 # (5) Generate model plots
 ?plot_rema
@@ -70,6 +71,9 @@ plots <- plot_rema(tidy_rema = output,
 plots$biomass_by_strata  
 plots$biomass_by_strata + 
   facet_wrap(~strata, ncol = 1)
+
+# interested in apportionment?
+plots$proportion_biomass_by_strata
 
 # (6) Bridging or model comparisons: TMB vs. ADMB model
 ?compare_rema_models
