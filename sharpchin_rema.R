@@ -54,6 +54,11 @@ m1 <- fit_rema(input)
 output <- tidy_rema(rema_model = m1)
 names(output)
 output$parameter_estimates # estimated fixed effects parameters
+
+# if you're interested in the parameter estimates in log-space:
+names(m1)
+m1$sdrep
+
 output$biomass_by_strata %>% View # df of predicted and observed biomass by stratum
 output$total_predicted_biomass # total predicted biomass
 
