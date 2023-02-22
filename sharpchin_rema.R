@@ -32,12 +32,12 @@ admb_re$biomass_dat
 
 # (2) Prepare REMA model inputs
 ?prepare_rema_input # note alternative methods for bringing in survey data observations
-input <- prepare_rema_input(model_name = 'TMB-v1',
+input <- prepare_rema_input(model_name = 'TMB-strata-PE',
                             admb_re = admb_re)
 
 # open rwout.rep or .dat files to look at zeros. open the re.tpl file to see how
 # zeros are treated
-input <- prepare_rema_input(model_name = 'TMB-v1',
+input <- prepare_rema_input(model_name = 'TMB-strata-PE',
                             admb_re = admb_re,
                             # explicity define zero assumption ('NA' is the
                             # default)
@@ -95,7 +95,7 @@ output$parameter_estimates
 # Ohhhh, the ADMB model shares process error across all areas. 
 
 # (7) New model with shared process error
-input <- prepare_rema_input(model_name = 'TMB-v2',
+input <- prepare_rema_input(model_name = 'TMB-share-PE',
                             admb_re = admb_re,
                             # share process error (default is PE_options =
                             # list(pointer_PE_biomass = c(1, 2, 3)))
@@ -121,7 +121,7 @@ admb_re$biomass_dat
 biomass_dat <- admb_re$biomass_dat
 biomass_dat
 
-input <- prepare_rema_input(model_name = 'TMB-v3',
+input <- prepare_rema_input(model_name = 'TMB-biomass-dat',
                             biomass_dat = biomass_dat,
                             PE_options = list(pointer_PE_biomass = c(1, 1, 1)),
                             zeros = list(assumption = 'NA'))
@@ -138,3 +138,21 @@ compare$plots$biomass_by_strata
 # method. The GPT and SSC knows to expect total biomass confidence intervals to
 # differ because of this change. 
 compare$plots$total_predicted_biomass
+
+# Tweedie ----
+
+input <- prepare_rema_input(model_name = 'TMB-Tweedie',
+                            admb_re = admb_re,
+                            PE_options = list(pointer_PE_biomass = c(1, 1, 1)),
+                            zeros = list(assumption = 'tweedie'))
+
+m4 <- fit_rema(input)
+
+compare <- compare_rema_models(rema_models = list(m2, m4), 
+                               biomass_ylab = 'Biomass (t)')
+
+compare$plots$biomass_by_strata + 
+  facet_wrap(~strata, ncol = 1, scales = 'free_y')
+compare$plots$total_predicted_biomass
+compare$aic
+compare$output$parameter_estimates
